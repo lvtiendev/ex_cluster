@@ -2,7 +2,7 @@ defmodule ExCluster.Order do
   use GenServer
   require Logger
 
-  def child_spec(customer), do: %{ id: customer, 
+  def child_spec(customer), do: %{ id: customer,
                                    start: { __MODULE__, :start_link, [customer] } }
 
   def start_link(customer) do
@@ -20,26 +20,26 @@ defmodule ExCluster.Order do
   def contents(customer) do
     GenServer.call(via_tuple(customer), { :contents })
   end
-  
+
   defp via_tuple(customer) do
     { :via, Horde.Registry, { ExCluster.Registry, customer } }
   end
-  
+
   def init(customer) do
     Process.flag(:trap_exit, true)
     order_contents = ExCluster.StateHandoff.pickup(customer)
     { :ok, { customer, order_contents } }
   end
-  
+
   def handle_cast({ :add, new_order_contents }, { customer, order_contents }) do
     { :noreply, { customer, order_contents ++ new_order_contents } }
   end
-  
+
   def handle_call({ :contents }, _from, state = { _, order_contents }) do
     { :reply, order_contents, state }
   end
 
-  def terminate(reason, { customer, order_contents }) do
+  def terminate(_reason, { customer, order_contents }) do
     ExCluster.StateHandoff.handoff(customer, order_contents)
     :ok
   end

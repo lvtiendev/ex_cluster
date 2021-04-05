@@ -5,7 +5,7 @@ defmodule ExCluster.MixProject do
     [
       app: :ex_cluster,
       version: "0.1.0",
-      elixir: "~> 1.7",
+      elixir: "~> 1.10.3",
       start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
@@ -22,8 +22,7 @@ defmodule ExCluster.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      { :horde, "~> 0.3.0" },
-      { :distillery, "~> 2.0" },
+      { :horde, "~> 0.8.3" },
       { :libcluster, "~> 3.0" }
     ]
   end
