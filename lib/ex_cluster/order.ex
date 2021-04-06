@@ -21,6 +21,10 @@ defmodule ExCluster.Order do
     GenServer.call(via_tuple(customer), { :contents })
   end
 
+  def stop(customer) do
+    GenServer.cast(via_tuple(customer), { :stop })
+  end
+
   defp via_tuple(customer) do
     { :via, Horde.Registry, { ExCluster.Registry, customer } }
   end
@@ -39,8 +43,16 @@ defmodule ExCluster.Order do
     { :reply, order_contents, state }
   end
 
-  def terminate(_reason, { customer, order_contents }) do
-    ExCluster.StateHandoff.handoff(customer, order_contents)
+  def handle_cast({ :stop }, state) do
+    {:stop, :normal, state}
+  end
+
+  def terminate(reason, { customer, order_contents }) do
+    Logger.warn("Terminating #{customer} reason #{reason}")
+    case reason do
+      :normal -> Horde.DynamicSupervisor.terminate_child(ExCluster.OrderSupervisor, self())
+      _ -> ExCluster.StateHandoff.handoff(customer, order_contents)
+    end
     :ok
   end
 end

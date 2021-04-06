@@ -16,17 +16,14 @@ without any clustering.
 ## Running Locally - MultiNode
 
 To run a Cluster locally, run the application multiple times with unique Node names and a
-consistent cookie specified via `ERL_FLAGS`, for example this will run a 3 Node cluster:
+consistent cookie specified via `ERL_FLAGS`, for example this will run a 2 Node cluster:
 
 ```
 # Terminal 1
-$ ERL_FLAGS="-name count1@127.0.0.1 -setcookie cookie" NODES="count2@127.0.0.1,count3@127.0.0.1" iex -S mix
+$ ERL_FLAGS="-name count1@127.0.0.1 -setcookie cookie" iex -S mix
 
 # Terminal 2
-$ ERL_FLAGS="-name count2@127.0.0.1 -setcookie cookie" NODES="count1@127.0.0.1,count3@127.0.0.1" iex -S mix
-
-# Terminal 3
-$ ERL_FLAGS="-name count3@127.0.0.1 -setcookie cookie" NODES="count1@127.0.0.1,count2@127.0.0.1" iex -S mix
+$ ERL_FLAGS="-name count2@127.0.0.1 -setcookie cookie" iex -S mix
 ```
 
 ## Running on `minikube`
